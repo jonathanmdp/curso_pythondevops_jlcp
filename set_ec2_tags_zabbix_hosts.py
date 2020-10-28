@@ -1,5 +1,6 @@
 
 import boto3
+import json
 from zabbix_api import ZabbixAPI, ZabbixAPIException
 
 #Dictionary Teams
@@ -17,7 +18,7 @@ response = ec2client.describe_instances()
 for reservation in response["Reservations"]:
     for instance in reservation["Instances"]:
         #This sample print will output entire Dictionary object
-        #print(instance)
+        print(instance)
         # This will print will output the value of the Dictionary key 'InstanceId'
         Tags = instance["Tags"]
         for field in Tags:
@@ -27,7 +28,7 @@ for reservation in response["Reservations"]:
                 host_name = zhost
                 print(zhost)
 
-            if (field['Key'] == 'Team'):
+            if (field['Key'].lower() == 'team'):
                 #print('{}'.format(field['Key']).lower())
                 team = ('{}'.format(field['Value']).lower())
                 tag_update=team_list[team]
@@ -67,19 +68,22 @@ try:
         host_visiblename = host['name']
         hos_status = host['status']
         for xtag in host['tags']:
-            if (xtag['tag'] == 'Team'):
+            if (xtag['tag'].lower() == 'team'):
                 host_tag = xtag['value']
             else:
+                teste = host['tags']
+                novo = {'tag': 'team', 'value': tag_update}
+                teste.append(novo)
+                print(type(teste))
                 teg_team = zapi.host.update({
                 "hostid": host_update,
                 "tags": [
                         {
-                            "tag": "team",
-                            "value": tag_update
+                         teste
                         }
                     ]
                 })
-            host_tag = tag_update
+                host_tag = tag_update
 
         print('{} - {} - {} - {} - {}'.format(hosts_id, host_name, host_visiblename, hos_status, host_tag))
 except ZabbixAPIException as e:
@@ -93,7 +97,7 @@ if (host_tag!=tag_update):
             "hostid": host_update,
             "tags": [
                     {
-                        "tag": "Team",
+                        "tag": "team",
                         "value": tag_update
                     }
                 ]
@@ -103,4 +107,4 @@ if (host_tag!=tag_update):
         print(e)
         sys.exit()
 else:
-    print("Tag atual")
+    print("Tag ja atualizada")
