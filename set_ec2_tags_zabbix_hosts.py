@@ -1,6 +1,7 @@
 
 import boto3
 import json
+
 from zabbix_api import ZabbixAPI, ZabbixAPIException
 
 #Dictionary Teams
@@ -93,12 +94,14 @@ except ZabbixAPIException as e:
 # Update host_tag
 if (host_tag!=tag_update):
     try:
+        teste = host['tags']
+        novo = {'tag': 'team', 'value': tag_update}
+        teste.append(novo)
         updating = zapi.host.update({
             "hostid": host_update,
             "tags": [
                     {
-                        "tag": "team",
-                        "value": tag_update
+                        teste
                     }
                 ]
         })
