@@ -1,6 +1,5 @@
 
 import boto3
-import json
 
 from zabbix_api import ZabbixAPI, ZabbixAPIException
 
@@ -78,11 +77,7 @@ try:
                 print(type(teste))
                 teg_team = zapi.host.update({
                 "hostid": host_update,
-                "tags": [
-                        {
-                         teste
-                        }
-                    ]
+                "tags": teste
                 })
                 host_tag = tag_update
 
@@ -99,11 +94,7 @@ if (host_tag!=tag_update):
         teste.append(novo)
         updating = zapi.host.update({
             "hostid": host_update,
-            "tags": [
-                    {
-                        teste
-                    }
-                ]
+            "tags": teste
         })
         print("Atualização realizada com sucesso")
     except ZabbixAPIException as e:
